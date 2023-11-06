@@ -1,8 +1,11 @@
 package org.example;
 
 import io.restassured.RestAssured;
+import io.restassured.config.EncoderConfig;
+import io.restassured.config.SSLConfig;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import io.specto.hoverfly.junit.rule.HoverflyRule;
 import org.junit.ClassRule;
 import org.junit.FixMethodOrder;
@@ -11,7 +14,6 @@ import org.junit.runners.MethodSorters;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import static io.restassured.RestAssured.given;
 import static io.specto.hoverfly.junit.core.SimulationSource.dsl;
 import static io.specto.hoverfly.junit.dsl.HoverflyDsl.service;
 import static io.specto.hoverfly.junit.dsl.ResponseCreators.success;
@@ -54,16 +56,35 @@ public class HoverflyDSLTest {
     public void shouldBeAbleToGetABookingUsingHoverflyUsingRestAssured() {
         // Given
         RestAssured.baseURI = "http://www.my-test.com";
+        RequestSpecification request =
+            RestAssured
+                .given()
+                .config(RestAssured
+                    .config()
+                    .sslConfig(new SSLConfig()
+                        .allowAllHostnames()
+                        .relaxedHTTPSValidation()
+                    )
+                    .encoderConfig(EncoderConfig
+                        .encoderConfig()
+                        .encodeContentTypeAs(
+                            "application json",
+                            ContentType.JSON
+                        )
+                    )
+                )
+                .accept("application/json")
+                .contentType("application/json; charset=UTF-8");
 
         // When
-        Response response = given()
-            .contentType(ContentType.JSON)
-            .when()
-            .get("/api/bookings/1");
+        Response response =
+            request
+                .when()
+                .get("/api/bookings/1");
 
         // Then
-        int statusCode = response.getStatusCode();
-        String result = response.then().extract().response().asPrettyString();
+        int statusCode = response.then().extract().statusCode();
+        String result  = response.then().extract().response().asPrettyString();
 
         out.printf("Response result: %s%n", result);
         out.printf("Status code: %s%n", response.getStatusCode());
