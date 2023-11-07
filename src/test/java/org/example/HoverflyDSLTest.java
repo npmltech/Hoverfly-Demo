@@ -76,7 +76,6 @@ public class HoverflyDSLTest {
         //
     }
 
-
     @Test
     public void shouldBeAbleToGetABookingUsingHoverfly() {
         // When
