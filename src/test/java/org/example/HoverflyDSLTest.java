@@ -27,7 +27,7 @@ import static org.springframework.http.HttpStatus.OK;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HoverflyDSLTest {
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
     private static RequestSpecification request;
 
     public HoverflyDSLTest() {
@@ -50,7 +50,7 @@ public class HoverflyDSLTest {
     @Before
     public void setup() {
         // Given
-        RestAssured.baseURI = "http://www.my-test.com";
+        RestAssured.baseURI = "https://www.my-test.com";
         HoverflyDSLTest.request =
             RestAssured
                 .given()
@@ -78,7 +78,7 @@ public class HoverflyDSLTest {
     public void shouldBeAbleToGetABookingUsingHoverfly() {
         // When
         ResponseEntity<String> getBookingResponse = this.restTemplate
-            .getForEntity("http://www.my-test.com/api/bookings/1", String.class);
+            .getForEntity("https://www.my-test.com/api/bookings/1", String.class);
 
         // Then
         assertThat(getBookingResponse.getStatusCode()).isEqualTo(OK);
