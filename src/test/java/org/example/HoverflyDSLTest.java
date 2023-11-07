@@ -11,26 +11,22 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import static io.specto.hoverfly.junit.core.SimulationSource.dsl;
 import static io.specto.hoverfly.junit.dsl.HoverflyDsl.service;
-import static io.specto.hoverfly.junit.dsl.ResponseCreators.created;
-import static io.specto.hoverfly.junit.dsl.ResponseCreators.success;
+import static io.specto.hoverfly.junit.dsl.ResponseCreators.*;
 import static java.lang.System.out;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.OK;
 
-@RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HoverflyDSLTest {
 
-    private final RestTemplate restTemplate;
+    private RestTemplate restTemplate;
     private static RequestSpecification request;
 
     public HoverflyDSLTest() {
@@ -46,6 +42,11 @@ public class HoverflyDSLTest {
                 .post("/api/bookings")
                 .body("{\"flightId\": \"1\"}")
                 .willReturn(created("http://localhost/api/bookings/1"))
+                .put("/api/bookings/1")
+                .body("{\"flightId\": \"1\", \"class\": \"PREMIUM\"}")
+                .willReturn(success())
+                .delete("/api/bookings/1")
+                .willReturn(noContent())
             //
         )
     );
@@ -53,7 +54,7 @@ public class HoverflyDSLTest {
     @Before
     public void setup() {
         // Given
-        RestAssured.baseURI = "https://www.my-test.com";
+        RestAssured.baseURI = "http://www.my-test.com";
         HoverflyDSLTest.request =
             RestAssured
                 .given()
@@ -75,18 +76,16 @@ public class HoverflyDSLTest {
             //
         //
     }
-
     @Test
     public void shouldBeAbleToGetABookingUsingHoverfly() {
         // When
         ResponseEntity<String> getBookingResponse = this.restTemplate
-            .getForEntity("https://www.my-test.com/api/bookings/1", String.class);
+            .getForEntity("http://www.my-test.com/api/bookings/1", String.class);
 
         // Then
         assertThat(getBookingResponse.getStatusCode()).isEqualTo(OK);
         assertThatJson(getBookingResponse.getBody()).isEqualTo("{\"bookingId\":\"1\"}");
     }
-
     @Test
     public void shouldBeAbleToGetABookingUsingHoverflyUsingRestAssuredGetMethod() {
         // When
@@ -124,5 +123,38 @@ public class HoverflyDSLTest {
 
         assertThat(statusCode).isEqualTo(201);
         assertThat(header).isEqualTo("http://localhost/api/bookings/1");
+    }
+
+    @Test
+    public void shouldBeAbleToGetABookingUsingHoverflyUsingRestAssuredPutMethod() {
+        // When
+        Response response =
+            HoverflyDSLTest.request
+                .body("{\"flightId\": \"1\", \"class\": \"PREMIUM\"}")
+                .when()
+                .put("/api/bookings/1");
+
+        // Then
+        int statusCode = response.then().extract().statusCode();
+
+        out.printf("Status code: %s%n", response.getStatusCode());
+
+        assertThat(statusCode).isEqualTo(200);
+    }
+
+    @Test
+    public void shouldBeAbleToGetABookingUsingHoverflyUsingRestAssuredDeleteMethod() {
+        // When
+        Response response =
+            HoverflyDSLTest.request
+                .when()
+                .delete("/api/bookings/1");
+
+        // Then
+        int statusCode = response.then().extract().statusCode();
+
+        out.printf("Status code: %s%n", response.getStatusCode());
+
+        assertThat(statusCode).isEqualTo(204);
     }
 }
