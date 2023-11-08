@@ -29,8 +29,9 @@ import static org.springframework.http.HttpStatus.OK;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HoverflyDSLTest {
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
     private static RequestSpecification request;
+    private static Response response;
 
     public HoverflyDSLTest() {
         restTemplate = new RestTemplate();
@@ -40,14 +41,18 @@ public class HoverflyDSLTest {
     public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(
         dsl(
             service("www.my-test.com")
+                // GET
                 .get("/api/bookings/1")
                 .willReturn(success("{\"bookingId\":\"1\"}", "application/json"))
+                // POST
                 .post("/api/bookings")
                 .body("{\"flightId\": \"1\"}")
-                .willReturn(created("http://localhost/api/bookings/1"))
+                // PUT
+                .willReturn(created("https://localhost/api/bookings/1"))
                 .put("/api/bookings/1")
                 .body("{\"flightId\": \"1\", \"class\": \"PREMIUM\"}")
                 .willReturn(success())
+                // DELETE
                 .delete("/api/bookings/1")
                 .willReturn(noContent())
             //
@@ -57,7 +62,7 @@ public class HoverflyDSLTest {
     @Before
     public void setup() {
         // Given
-        RestAssured.baseURI = "http://www.my-test.com";
+        RestAssured.baseURI = "https://www.my-test.com";
         HoverflyDSLTest.request =
             RestAssured
                 .given()
@@ -79,27 +84,29 @@ public class HoverflyDSLTest {
             //
         //
     }
+
     @Test
     public void shouldBeAbleToGetABookingUsingHoverfly() {
         // When
         ResponseEntity<String> getBookingResponse = this.restTemplate
-            .getForEntity("http://www.my-test.com/api/bookings/1", String.class);
+            .getForEntity("https://www.my-test.com/api/bookings/1", String.class);
 
         // Then
         assertThat(getBookingResponse.getStatusCode()).isEqualTo(OK);
         assertThatJson(getBookingResponse.getBody()).isEqualTo("{\"bookingId\":\"1\"}");
     }
+
     @Test
     public void shouldBeAbleToGetABookingUsingHoverflyUsingRestAssuredGetMethod() {
         // When
-        Response response =
+        HoverflyDSLTest.response =
             HoverflyDSLTest.request
                 .when()
                 .get("/api/bookings/1");
 
         // Then
-        int statusCode = response.then().extract().statusCode();
-        String result = response.then().extract().response().asPrettyString();
+        int statusCode = HoverflyDSLTest.response.then().extract().statusCode();
+        String result = HoverflyDSLTest.response.then().extract().response().asPrettyString();
 
         out.printf("Status code: %s%n", response.getStatusCode());
         out.printf("Response result: %s%n", result);
@@ -111,36 +118,36 @@ public class HoverflyDSLTest {
     @Test
     public void shouldBeAbleToGetABookingUsingHoverflyUsingRestAssuredPostMethod() {
         // When
-        Response response =
+        HoverflyDSLTest.response =
             HoverflyDSLTest.request
                 .body("{\"flightId\": \"1\"}")
                 .when()
                 .post("/api/bookings");
 
         // Then
-        int statusCode = response.then().extract().statusCode();
-        String header = response.then().extract().headers().get("Location").getValue();
+        int statusCode = HoverflyDSLTest.response.then().extract().statusCode();
+        String header = HoverflyDSLTest.response.then().extract().headers().get("Location").getValue();
 
         out.printf("Status code: %s%n", response.getStatusCode());
         out.printf("Header content: %s%n", header);
 
         assertThat(statusCode).isEqualTo(201);
-        assertThat(header).isEqualTo("http://localhost/api/bookings/1");
+        assertThat(header).isEqualTo("https://localhost/api/bookings/1");
     }
 
     @Test
     public void shouldBeAbleToGetABookingUsingHoverflyUsingRestAssuredPutMethod() {
         // When
-        Response response =
+        HoverflyDSLTest.response =
             HoverflyDSLTest.request
                 .body("{\"flightId\": \"1\", \"class\": \"PREMIUM\"}")
                 .when()
                 .put("/api/bookings/1");
 
         // Then
-        int statusCode = response.then().extract().statusCode();
+        int statusCode = HoverflyDSLTest.response.then().extract().statusCode();
 
-        out.printf("Status code: %s%n", response.getStatusCode());
+        out.printf("Status code: %s%n", HoverflyDSLTest.response.getStatusCode());
 
         assertThat(statusCode).isEqualTo(200);
     }
@@ -148,13 +155,13 @@ public class HoverflyDSLTest {
     @Test
     public void shouldBeAbleToGetABookingUsingHoverflyUsingRestAssuredDeleteMethod() {
         // When
-        Response response =
+        HoverflyDSLTest.response =
             HoverflyDSLTest.request
                 .when()
                 .delete("/api/bookings/1");
 
         // Then
-        int statusCode = response.then().extract().statusCode();
+        int statusCode = HoverflyDSLTest.response.then().extract().statusCode();
 
         out.printf("Status code: %s%n", response.getStatusCode());
 
