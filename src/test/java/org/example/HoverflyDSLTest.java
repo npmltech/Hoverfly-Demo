@@ -62,7 +62,7 @@ public class HoverflyDSLTest {
     @Before
     public void setup() {
         // Given
-        RestAssured.baseURI = "https://www.my-test.com";
+        RestAssured.baseURI = "http://www.my-test.com";
         HoverflyDSLTest.request =
             RestAssured
                 .given()
@@ -106,7 +106,8 @@ public class HoverflyDSLTest {
 
         // Then
         int statusCode = HoverflyDSLTest.response.then().extract().statusCode();
-        String result = HoverflyDSLTest.response.then().extract().response().asPrettyString();
+        String result  = HoverflyDSLTest.response.then().extract().response().asPrettyString();
+
 
         out.printf("Status code: %s%n", response.getStatusCode());
         out.printf("Response result: %s%n", result);
@@ -132,6 +133,7 @@ public class HoverflyDSLTest {
         out.printf("Header content: %s%n", header);
 
         assertThat(statusCode).isEqualTo(201);
+
         assertThat(header).isEqualTo("https://localhost/api/bookings/1");
     }
 

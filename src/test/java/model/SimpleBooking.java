@@ -15,7 +15,8 @@ public record SimpleBooking(int id, String origin, String destination, LocalDate
             @JsonProperty("id") int id,
             @JsonProperty("origin") String origin,
             @JsonProperty("destination") String destination,
-            @JsonProperty("date") LocalDate date) {
+            @JsonProperty("date") LocalDate date
+    ) {
         this.id = id;
         this.origin = origin;
         this.destination = destination;
