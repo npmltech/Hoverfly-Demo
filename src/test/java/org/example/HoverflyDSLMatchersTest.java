@@ -3,22 +3,19 @@ package org.example;
 import io.specto.hoverfly.junit.core.ObjectMapperFactory;
 import io.specto.hoverfly.junit.core.SimulationSource;
 import io.specto.hoverfly.junit.rule.HoverflyRule;
-import model.SimpleBooking;
 import org.junit.ClassRule;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 
 import static io.specto.hoverfly.junit.dsl.HoverflyDsl.service;
@@ -56,7 +53,7 @@ public class HoverflyDSLMatchersTest {
     public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(
         SimulationSource.dsl(
             service(matches("www.*-test.com")) // Matches url with wildcard
-                /* --- GET --- */
+                /* ---------- GET ---------- */
                 .get(startsWith("/api/bookings/")) // Matches request path that starts with /api/bookings/
                 .queryParam("page", matches("1*"))
                 .queryParam("description", any()) // Matches page query with any value
@@ -66,7 +63,7 @@ public class HoverflyDSLMatchersTest {
                 .anyQueryParams() // Match any query params
                 .willReturn(success(json(BOOKING)))
 
-                 /* --- POST --- */
+                 /* ---------- POST ---------- */
                 .post("/api/bookings")
                 .body(matchesJsonPath("$.flightId")) // Matches body with a JSON path expression
                 .willReturn(created("https://localhost/api/bookings/1"))
@@ -76,7 +73,7 @@ public class HoverflyDSLMatchersTest {
                 .body(matchesXPath("/flightId")) // Matches body with a xpath expression
                 .willReturn(created("https://localhost/api/bookings/1"))
 
-                /* --- PUT --- */
+                /* ---------- PUT ---------- */
                 .put("/api/bookings/1")
                 .body(equalsToJson(json(HoverflyDSLMatchersTest.BOOKING))) // Matches body which equals to a JSON Object
                 .willReturn(success())
@@ -98,6 +95,13 @@ public class HoverflyDSLMatchersTest {
 
                 .put("/api/bookings/1")
                 .body(equalsToXml(xml(HoverflyDSLMatchersTest.BOOKING))) // Matches body which equals to XML object
+                .willReturn(success())
+
+                // Match using multiple body matchers
+                .put("/api/bookings/1")
+                .header("Content-Type", contains("application/json"))
+                .body(contains("London"))
+                .body(contains("BUSINESS"))
                 .willReturn(success()),
 
             // Match any path
@@ -277,12 +281,15 @@ public class HoverflyDSLMatchersTest {
     @Test
     public void shouldBeAbleToMatchAnyBody() throws Exception {
         // Given
-        RequestEntity<String> bookFlightRequest = RequestEntity.post(new URI("https://www.cloud-service.com/api/v1/containers"))
+        RequestEntity<String> bookFlightRequest = RequestEntity
+            .post(
+                new URI("https://www.cloud-service.com/api/v1/containers")
+            )
             .contentType(APPLICATION_JSON)
             .body("{ \"Hostname\": \"\", \"Domainname\": \"\", \"User\": \"\"}");
 
         // When
-        ResponseEntity<String> bookFlightResponse = restTemplate.exchange(bookFlightRequest, String.class);
+        ResponseEntity<String> bookFlightResponse = this.restTemplate.exchange(bookFlightRequest, String.class);
 
         // Then
         assertThat(bookFlightResponse.getStatusCode()).isEqualTo(CREATED);
@@ -291,12 +298,12 @@ public class HoverflyDSLMatchersTest {
     @Test
     public void shouldBeAbleToMatchUsingMultipleBodyMatchers() throws Exception {
         // Given
-        RequestEntity<String> bookFlightRequest = RequestEntity
-            .put(
-                new URI("http://www.my-test.com/api/bookings/1")
+        RequestEntity<String> bookFlightRequest = RequestEntity.put(
+                new URI("https://www.xpto-test.com/api/bookings/1")
             )
             .contentType(APPLICATION_JSON)
-            .body("{\"class\": \"BUSINESS\", \"destination\": \"London\"}");
+            .accept(APPLICATION_JSON)
+            .body("{\"destination\": \"London\", \"class\": \"BUSINESS\"}");
 
         // When
         ResponseEntity<String> bookFlightResponse = this.restTemplate.exchange(bookFlightRequest, String.class);
@@ -310,7 +317,7 @@ public class HoverflyDSLMatchersTest {
         // When
         RequestEntity<String> bookFlightRequest = RequestEntity
             .put(
-                new URI("http://www.my-test.com/api/bookings/1")
+                new URI("https://www.xpto-test.com/api/bookings/1")
             )
             .contentType(APPLICATION_JSON)
             .body("{\"class\": \"ECONOMY\", \"destination\": \"London\"}");   // Not matching because body does not contains 'BUSINESS'
