@@ -33,7 +33,7 @@ public class HoverflyMiddlewareTest {
         classpath("middleware-1/simulation.json"),
         localConfigs()
             .localMiddleware(
-                getMiddlewareJarDirectory(),
+                HoverflyMiddlewareTest.getMiddlewareJarDirectory(),
                 "middleware-1/empty.json"
                 //
             )
@@ -46,7 +46,7 @@ public class HoverflyMiddlewareTest {
         try (Hoverfly hoverfly = new Hoverfly(
             localConfigs()
                 .localMiddleware(
-                    getMiddlewareJarDirectory(),
+                    HoverflyMiddlewareTest.getMiddlewareJarDirectory(),
                     "middleware-1/empty.json"
                    //
                 ),
