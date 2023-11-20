@@ -13,7 +13,6 @@ import java.net.URI;
 import static io.specto.hoverfly.junit.core.HoverflyConfig.localConfigs;
 import static io.specto.hoverfly.junit.core.HoverflyMode.SIMULATE;
 import static io.specto.hoverfly.junit.core.SimulationSource.classpath;
-import static java.lang.System.out;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -34,9 +33,7 @@ public class HoverflyMiddlewareTest {
         classpath("middleware-1/simulation.json"),
         localConfigs()
             .localMiddleware(
-                System.getProperty("user.dir")
-                    .concat(HoverflyMiddlewareTest.distDir)
-                    .concat("/run-jar.sh"),
+                getMiddlewareJarDirectory(),
                 "middleware-1/empty.json"
                 //
             )
@@ -49,9 +46,7 @@ public class HoverflyMiddlewareTest {
         try (Hoverfly hoverfly = new Hoverfly(
             localConfigs()
                 .localMiddleware(
-                    System.getProperty("user.dir")
-                        .concat(HoverflyMiddlewareTest.distDir)
-                        .concat("/run-jar.sh"),
+                    getMiddlewareJarDirectory(),
                     "middleware-1/empty.json"
                    //
                 ),
@@ -81,8 +76,8 @@ public class HoverflyMiddlewareTest {
         assertThat(response.getStatusCode()).isEqualTo(OK);
     }
 
-    public static void main(String[] args) {
-        String distDir = "/src/main/java/org/example/dist/";
-        out.println(System.getProperty("user.dir").concat(distDir).concat("run-jar.sh"));
+    private static String getMiddlewareJarDirectory() {
+        String distDir = "/src/test/resources/";
+        return System.getProperty("user.dir").concat(distDir).concat("run-jar.sh");
     }
 }
