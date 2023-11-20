@@ -3,6 +3,7 @@ package org.example;
 import io.specto.hoverfly.junit.core.ObjectMapperFactory;
 import io.specto.hoverfly.junit.core.SimulationSource;
 import io.specto.hoverfly.junit.rule.HoverflyRule;
+import org.example.model.SimpleBooking;
 import org.junit.ClassRule;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -15,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 
 import static io.specto.hoverfly.junit.dsl.HoverflyDsl.service;
