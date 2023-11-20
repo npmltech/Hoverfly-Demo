@@ -78,7 +78,6 @@ public class HoverflyMiddlewareTest {
 
     private static String getMiddlewareJarDirectory() {
         return System.getProperty("user.dir")
-            .concat("/src/test/resources/")
-            .concat("run-jar.sh");
+            .concat("/src/test/resources/run-jar.sh");
     }
 }
