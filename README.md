@@ -7,10 +7,10 @@ Demonstration of Hoverfly Framework - API Simulator and Service Virtualization.
 
 ## Explanation (Basics):
 
-Insert gif or link to demo
+Explanation about the project.
 
 
-## Documentation
+## Documentation:
 
 [Documentation](https://linktodocumentation)
 
@@ -32,12 +32,12 @@ Install my-project with command below:
   mvn install my-project
 ```
     
-## Screenshots
+## Screenshots:
 
 ![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
 
 
-## Running Tests
+## Running Tests:
 
 To run tests, run the following command
 
@@ -46,7 +46,7 @@ To run tests, run the following command
 ```
 
 
-## Usage/Examples
+## Usage/Examples:
 
 ```java
 class HelloWorld {
@@ -57,6 +57,8 @@ class HelloWorld {
 }
 ```
 
-## References
+## References:
 
 [Tutorial](https://linktotutorial)
+
+---
