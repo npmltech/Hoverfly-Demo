@@ -25,8 +25,8 @@
         <hoverfly.version>0.15.0</hoverfly.version>
         <spring.framework.version>5.3.30</spring.framework.version>
         <spring.web.version>6.0.13</spring.web.version>
-        <rest-assured.version>5.3.0</rest-assured.version>
-        <jackson-core.version>2.15.3</jackson-core.version>
+        <rest-assured.version>5.3.2</rest-assured.version>
+        <jackson-core.version>2.16.0</jackson-core.version>
     </properties>
 
     <dependencies>
