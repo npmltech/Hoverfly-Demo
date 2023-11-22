@@ -13,8 +13,11 @@ import java.net.URI;
 import static io.specto.hoverfly.junit.core.HoverflyConfig.localConfigs;
 import static io.specto.hoverfly.junit.core.HoverflyMode.SIMULATE;
 import static io.specto.hoverfly.junit.core.SimulationSource.classpath;
-import static org.assertj.core.api.Assertions.assertThat;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.value;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.http.HttpStatus.OK;
+
 
 public class HoverflyMiddlewareTest {
 
@@ -22,7 +25,7 @@ public class HoverflyMiddlewareTest {
 
     private URI uri;
 
-    private static final String distDir = "/src/test/resources/";
+    private static final String TEST_RSRC = "/src/test/resources/";
 
     public HoverflyMiddlewareTest() {
         restTemplate = new RestTemplate();
@@ -30,18 +33,20 @@ public class HoverflyMiddlewareTest {
 
     @ClassRule
     public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(
-        classpath("middleware-1/simulation.json"),
-        localConfigs()
-            .localMiddleware(
-                System.getProperty("user.dir")
-                    .concat("/src/test/resources/run-jar.sh"),
-                //
-                "middleware-1/empty.json"
-                //
-            )
-            .disableTlsVerification()
+            classpath("middleware-1/simulation.json"),
+            localConfigs()
+                .localMiddleware(
+                    System.getProperty("user.dir")
+                        .concat(
+                            "%srun-jar.sh".formatted(HoverflyMiddlewareTest.TEST_RSRC)
+                        ),
+                    //
+                    "middleware-1/empty.json"
+                    //
+                )
+                .disableTlsVerification()
+            //
         //
-    //
     ).printSimulationData();
 
     public void emulateMiddleware() {
@@ -49,15 +54,16 @@ public class HoverflyMiddlewareTest {
             localConfigs()
                 .localMiddleware(
                     System.getProperty("user.dir")
-                        .concat("/src/test/resources/run-jar.sh"),
+                        .concat(
+                            "%srun-jar.sh".formatted(HoverflyMiddlewareTest.TEST_RSRC)
+                        ),
                     //
                     "middleware-1/empty.json"
-                   //
+                    //
                 ),
-                SIMULATE
-            )
+            SIMULATE
         )
-        {
+        ) {
             hoverfly.start();
             hoverfly.simulate(
                 classpath("middleware-1/simulation.json")
@@ -77,6 +83,18 @@ public class HoverflyMiddlewareTest {
         //
 
         ResponseEntity<String> response = this.restTemplate.getForEntity(this.uri, String.class);
+
+        String responseString = response.getBody();
+
         assertThat(response.getStatusCode()).isEqualTo(OK);
+        assertThatJson(responseString)
+            .inPath("errors[*].source.pointer")
+            .isArray()
+            .containsAnyOf(value("/data/attributes/firstName"));
+        assertThatJson(responseString)
+            .node("errors")
+            .isArray()
+            .containsExactly("{\"detail\":\"Firstnamemustcontainatleasttwocharacters.\",\"source\":{\"pointer\":\"/data/attributes/firstName\"},\"status\":\"422\",\"title\":\"InvalidAttribute\"}");
+        //
     }
 }
