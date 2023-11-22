@@ -43,7 +43,11 @@ public class ConsumingWorldClock {
 
         Request request = new Request.Builder()
             .url(
-                String.format("http://worldclockapi.com/api/json/%s/now%s", timezone, callback)
+                String.format(
+                    "http://worldclockapi.com/api/json/%s/now%s",
+                    timezone,
+                    callback
+                )
             )
             .build();
         //
