@@ -10,6 +10,13 @@ import static java.lang.System.out;
 
 public class Middleware {
 
+    private static final String OUTPUT =
+        "{\"errors\":[{\"status\":\"422\"," +
+        "\"source\":{\"pointer\":\"/data/attributes/firstName\"}," +
+        "\"title\":\"InvalidAttribute\"," +
+        "\"detail\":\"Firstnamemustcontainatleasttwocharacters.\"}]" +
+        "}";
+
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
@@ -22,7 +29,7 @@ public class Middleware {
                 JsonNode pairs = objectMapper.readTree(payload);
                 if (pairs.has("response") && !pairs.get("response").get("headers").isNull()) {
                     ObjectNode responseNode = (ObjectNode) pairs.get("response");
-                    responseNode.put("body", "body was replaced by middleware\n");
+                    responseNode.put("body", Middleware.OUTPUT);
 
                     ObjectNode headers = (ObjectNode) responseNode.get("headers");
                     headers.remove("Content-Length");
