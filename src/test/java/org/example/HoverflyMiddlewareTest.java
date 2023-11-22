@@ -33,7 +33,9 @@ public class HoverflyMiddlewareTest {
         classpath("middleware-1/simulation.json"),
         localConfigs()
             .localMiddleware(
-                HoverflyMiddlewareTest.getMiddlewareJarDirectory(),
+                System.getProperty("user.dir")
+                    .concat("/src/test/resources/run-jar.sh"),
+                //
                 "middleware-1/empty.json"
                 //
             )
@@ -46,7 +48,9 @@ public class HoverflyMiddlewareTest {
         try (Hoverfly hoverfly = new Hoverfly(
             localConfigs()
                 .localMiddleware(
-                    HoverflyMiddlewareTest.getMiddlewareJarDirectory(),
+                    System.getProperty("user.dir")
+                        .concat("/src/test/resources/run-jar.sh"),
+                    //
                     "middleware-1/empty.json"
                    //
                 ),
@@ -74,10 +78,5 @@ public class HoverflyMiddlewareTest {
 
         ResponseEntity<String> response = this.restTemplate.getForEntity(this.uri, String.class);
         assertThat(response.getStatusCode()).isEqualTo(OK);
-    }
-
-    private static String getMiddlewareJarDirectory() {
-        return System.getProperty("user.dir")
-            .concat("/src/test/resources/run-jar.sh");
     }
 }
