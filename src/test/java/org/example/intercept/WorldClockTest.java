@@ -25,7 +25,7 @@ public class WorldClockTest {
         "\"currentFileTime\":\"133441235489726188\", " +
         "\"ordinalDate\":\"2023-314\", " +
         "\"serviceResponse\":"+ null +", " +
-    "}";
+        "}";
 
     @Test
     public void shouldGetTimeFromExternalService(Hoverfly hoverfly) throws IllegalAccessException {
@@ -36,7 +36,7 @@ public class WorldClockTest {
                     .service("http://worldclockapi.com")
                     .get("/api/json/cet/now")
                     .queryParam("callback", "mycallback")
-                    .willReturn(success(OUTPUT, "application/json")
+                    .willReturn(success(WorldClockTest.OUTPUT, "application/json")
                 )
             )
         );
