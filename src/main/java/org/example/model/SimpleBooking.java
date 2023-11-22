@@ -8,12 +8,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.time.LocalDate;
 
-public final class SimpleBooking {
-    private final int id;
-    private final String origin;
-    private final String destination;
-    private final LocalDate date;
-
+public record SimpleBooking(int id, String origin, String destination, LocalDate date) {
     @JsonCreator
     public SimpleBooking(
         @JsonProperty("id") int id,
@@ -25,22 +20,6 @@ public final class SimpleBooking {
         this.origin = origin;
         this.destination = destination;
         this.date = date;
-    }
-
-    public int getId() {
-        return this.id;
-    }
-
-    public String getOrigin() {
-        return this.origin;
-    }
-
-    public String getDestination() {
-        return this.destination;
-    }
-
-    public LocalDate getDate() {
-        return this.date;
     }
 
     @Override
