@@ -34,9 +34,8 @@ public class ConsumingWorldClock {
         //
     }
 
-    public LocalTime getTime(@NotNull String timezone, String callback) {
+    public LocalTime getTime(@NotNull String timezone, @NotNull String callback) {
         LocalTime localTime;
-        assert callback != null;
 
         if (callback.isEmpty() || callback.isBlank())
             callback = "";
