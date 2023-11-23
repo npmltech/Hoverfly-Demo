@@ -1,6 +1,9 @@
 # Hoverfly-Demo
 
 #### ⚙️ Demonstration of Hoverfly Framework - API Simulator and Service Virtualization.
+<br />
+
+![hoverfly_logo](./img/hoverfly_logo.png)
 
 ## What is the Hoverfly?
 
