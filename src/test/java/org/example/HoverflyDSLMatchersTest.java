@@ -215,7 +215,7 @@ public class HoverflyDSLMatchersTest {
             .build()
             .toUri();
 
-        Throwable throwable = catchThrowable(() -> this.restTemplate.exchange(uri, HttpMethod.DELETE, null, Void.class));
+        Throwable throwable = catchThrowable(() -> this.restTemplate.exchange(this.uri, HttpMethod.DELETE, null, Void.class));
 
         assertThat(throwable).isInstanceOf(HttpServerErrorException.class);
 
