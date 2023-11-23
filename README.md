@@ -4,9 +4,8 @@
 
 <br />
 <p align="center">
-  <img align="center" src="./img/hoverfly_logo.png" alt="Hoverfly Logo"></img>
+  <img src="./img/hoverfly_logo.png" alt="Hoverfly Logo"></img>
 </p>
-<br />
 
 ## What is the Hoverfly?
 
