@@ -61,7 +61,7 @@ public class HoverflyDSLMatchersTest {
 
                 .get("/api/bookings/online")
                 .anyQueryParams() // Match any query params
-                .willReturn(success(json(BOOKING)))
+                .willReturn(success(json(HoverflyDSLMatchersTest.BOOKING)))
 
                  /* ---------- POST ---------- */
                 .post("/api/bookings")
@@ -176,7 +176,7 @@ public class HoverflyDSLMatchersTest {
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(OK);
-        assertThat(response.getBody()).isEqualTo(BOOKING);
+        assertThat(response.getBody()).isEqualTo(HoverflyDSLMatchersTest.BOOKING);
     }
 
     @Test
