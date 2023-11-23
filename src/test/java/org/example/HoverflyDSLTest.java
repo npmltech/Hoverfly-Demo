@@ -108,7 +108,6 @@ public class HoverflyDSLTest {
         int statusCode = HoverflyDSLTest.response.then().extract().statusCode();
         String result  = HoverflyDSLTest.response.then().extract().response().asPrettyString();
 
-
         out.printf("Status code: %s%n", response.getStatusCode());
         out.printf("Response result: %s%n", result);
 
