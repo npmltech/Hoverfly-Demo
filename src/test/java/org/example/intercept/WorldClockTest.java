@@ -16,16 +16,14 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class WorldClockTest {
 
     private static final String OUTPUT =
-        "{\"$id\":\"1\", " +
-        "\"currentDateTime\":\"2023-11-10T20:59+01:00\", " +
-        "\"utcOffset\":\"01:00:00\", " +
-        "\"isDayLightSavingsTime\":"+ false +", " +
-        "\"dayOfTheWeek\":\"Friday\", " +
-        "\"timeZoneName\":\"Central Europe Standard Time\", " +
-        "\"currentFileTime\":\"133441235489726188\", " +
-        "\"ordinalDate\":\"2023-314\", " +
-        "\"serviceResponse\":"+ null +", " +
-        "}";
+        "{\"$id\":\"1\"," +
+        "\"currentDateTime\":\"2023-11-25T20:59+01:00\"" +
+        ",\"utcOffset\":\"01:00:00\"," +
+        "\"isDayLightSavingsTime\":" + false + "," +
+        "\"dayOfTheWeek\":\"Saturday\"," +
+        "\"timeZoneName\":\"CentralEuropeStandardTime\"," +
+        "\"currentFileTime\":133454218945357720," +
+        "\"ordinalDate\":\"2023-329\"}";
 
     @Test
     public void shouldGetTimeFromExternalService(Hoverfly hoverfly) throws IllegalAccessException {
